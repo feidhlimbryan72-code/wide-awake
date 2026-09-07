@@ -11,7 +11,7 @@ public final class AlarmSchedulerService: NSObject, ObservableObject {
     @Published public var triggeredAlarm: Alarm?
     @Published public var isNotificationPermissionGranted: Bool = false
 
-    private let userDefaultsKey = "com.wakeorpay.alarms_store"
+    private let userDefaultsKey = "com.wideawake.alarms_store"
     private let notificationCenter = UNUserNotificationCenter.current()
 
     override private init() {

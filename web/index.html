@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wide Awake — Heavy Sleeper Alarm Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-black: #0a0a0c;
+            --surface-dark: #141418;
+            --card-dark: #1b1b22;
+            --orange-primary: #ff6b00;
+            --yellow-accent: #ffd600;
+            --green-laser: #00e676;
+            --cyan-memory: #00e5ff;
+            --purple-jigsaw: #d500f9;
+            --red-penalty: #ff2222;
+            --text-white: #ffffff;
+            --text-gray: #8e8e9a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: #050507;
+            color: var(--text-white);
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Device Mockup Frame */
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background-color: var(--bg-black);
+            border-radius: 48px;
+            border: 10px solid #23232c;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(255, 107, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dynamic-island {
+            width: 120px;
+            height: 28px;
+            background-color: #000;
+            border-radius: 20px;
+            margin: 10px auto 4px;
+            z-index: 100;
+        }
+
+        /* Screens */
+        .screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            padding: 16px 20px 24px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--orange-primary);
+            font-size: 24px;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Pro Banner */
+        .pro-banner {
+            background: linear-gradient(135deg, rgba(255, 214, 0, 0.15), rgba(255, 107, 0, 0.1));
+            border: 1px solid rgba(255, 214, 0, 0.4);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .pro-banner span {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--yellow-accent);
+            letter-spacing: 0.5px;
+        }
+
+        /* Alarm Cards */
+        .alarm-card {
+            background-color: var(--surface-dark);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #22222b;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .alarm-card:hover {
+            border-color: #333344;
+        }
+
+        .alarm-time {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .alarm-label {
+            font-size: 13px;
+            color: var(--orange-primary);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .alarm-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background-color: rgba(255, 107, 0, 0.15);
+            color: var(--orange-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-top: 6px;
+        }
+
+        .alarm-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+
+        .test-btn {
+            background: rgba(255, 214, 0, 0.15);
+            border: 1px solid rgba(255, 214, 0, 0.4);
+            color: var(--yellow-accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333; transition: .3s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .3s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--orange-primary); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Modal Overlay */
+        .modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background-color: var(--surface-dark);
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            padding: 20px;
+            max-height: 88%;
+            overflow-y: auto;
+            border-top: 1px solid #333;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--text-gray);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            background-color: var(--card-dark);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--orange-primary);
+        }
+
+        /* Challenge Selector Cards */
+        .challenge-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .challenge-option {
+            background-color: var(--card-dark);
+            border: 1.5px solid #2a2a35;
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .challenge-option.selected {
+            border-color: var(--orange-primary);
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
+        .challenge-option .title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .challenge-option .desc {
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        /* Active Alarm Screen */
+        .active-alarm-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000;
+            z-index: 300;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 30px 20px;
+            transition: background-color 0.4s;
+        }
+
+        .active-alarm-screen.active {
+            display: flex;
+        }
+
+        .active-alarm-screen.penalty {
+            animation: redFlash 1s infinite alternate;
+        }
+
+        @keyframes redFlash {
+            from { background-color: #1a0000; }
+            to { background-color: #4a0000; }
+        }
+
+        .urgency-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--orange-primary);
+            letter-spacing: 2px;
+        }
+
+        .penalty-badge {
+            color: var(--red-penalty);
+        }
+
+        .switcher-pills {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 12px 0;
+        }
+
+        .pill {
+            background-color: #222;
+            border: 1px solid #333;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .pill.active {
+            background-color: var(--orange-primary);
+            color: black;
+            border-color: var(--orange-primary);
+        }
+
+        /* Math Keypad */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+            margin: 0 auto;
+        }
+
+        .keypad-btn {
+            height: 56px;
+            background-color: var(--card-dark);
+            border: 1px solid #333;
+            border-radius: 14px;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .keypad-btn:active {
+            background-color: var(--orange-primary);
+            color: black;
+        }
+
+        /* Shake Ring */
+        .shake-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+        }
+
+        .shake-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 12px solid #222;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle, rgba(255, 214, 0, 0.1) 0%, transparent 70%);
+        }
+
+        /* Memory Matrix */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 240px;
+            margin: 0 auto;
+        }
+
+        .matrix-tile {
+            width: 70px;
+            height: 70px;
+            background-color: #222;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .matrix-tile.highlight {
+            background-color: var(--cyan-memory);
+            box-shadow: 0 0 15px var(--cyan-memory);
+        }
+
+        /* Jigsaw Puzzle */
+        .jigsaw-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            width: 240px;
+            margin: 0 auto;
+        }
+
+        .jigsaw-tile {
+            width: 72px;
+            height: 72px;
+            background-color: var(--purple-jigsaw);
+            border-radius: 10px;
+            color: white;
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .jigsaw-tile.empty {
+            background-color: transparent;
+            border: 1px dashed #444;
+            cursor: default;
+        }
+
+        /* Volume Meter */
+        .meter {
+            width: 100%;
+            height: 6px;
+            background-color: #222;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .meter-fill {
+            height: 100%;
+            width: 85%;
+            background-color: var(--orange-primary);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="dynamic-island"></div>
+
+        <!-- 1. DASHBOARD SCREEN -->
+        <div id="dashboard-screen" class="screen active">
+            <div class="app-header">
+                <div>
+                    <h1 class="app-title">Wide Awake</h1>
+                    <span style="font-size: 11px; color: var(--text-gray); font-family: 'JetBrains Mono';">HEAVY SLEEPER ALARM</span>
+                </div>
+                <button class="icon-btn" onclick="openCreateModal()">＋</button>
+            </div>
+
+            <!-- Pro Upgrade Banner -->
+            <div class="pro-banner" onclick="openPaywall('Unlock unlimited alarms & biometric anchors')">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span>👑 WIDE AWAKE PRO</span>
+                    </div>
+                    <div style="font-size: 12px; color: #fff; margin-top: 2px;">3-Day Free Trial Available</div>
+                </div>
+                <span style="color: var(--yellow-accent);">UPGRADE ›</span>
+            </div>
+
+            <!-- Alarms List -->
+            <div id="alarms-list">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- 2. CREATE / EDIT MODAL -->
+        <div id="alarm-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="icon-btn" style="font-size: 14px; width: auto; color: var(--text-gray);" onclick="closeModal()">Cancel</button>
+                    <h3 style="font-size: 16px; font-weight: 700;" id="modal-title">Configure Alarm</h3>
+                    <button class="icon-btn" style="font-size: 14px; width: auto; color: var(--orange-primary); font-weight: 700;" onclick="saveAlarm()">Save</button>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">TIME (24-HOUR)</label>
+                    <input type="time" id="alarm-time-input" class="form-input" value="07:00">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ALARM LABEL</label>
+                    <input type="text" id="alarm-label-input" class="form-input" value="Morning Awakening">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">CHOOSE DISARM CHALLENGE</label>
+                    <div class="challenge-selector">
+                        <div class="challenge-option selected" data-type="math" onclick="selectChallengeType('math')">
+                            <div class="title">🔢 Math</div>
+                            <div class="desc">Mental arithmetic equations</div>
+                        </div>
+                        <div class="challenge-option" data-type="shake" onclick="selectChallengeType('shake')">
+                            <div class="title">📳 Shake</div>
+                            <div class="desc">Physical motion threshold</div>
+                        </div>
+                        <div class="challenge-option" data-type="barcode" onclick="selectChallengeType('barcode')">
+                            <div class="title">📷 Barcode 👑</div>
+                            <div class="desc">Bathroom/Kitchen anchor</div>
+                        </div>
+                        <div class="challenge-option" data-type="memory" onclick="selectChallengeType('memory')">
+                            <div class="title">🧩 Memory Matrix 👑</div>
+                            <div class="desc">Pattern recall grid</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700;">Choice on Wake-Up</div>
+                        <div style="font-size: 11px; color: var(--text-gray);">Allows switching disarm mode when alarm rings</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="choice-wake-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700;">90-Second Snooze Penalty</div>
+                        <div style="font-size: 11px; color: var(--text-gray);">Escalates volume to 100% and intense vibration</div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="penalty-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PAYWALL MODAL -->
+        <div id="paywall-modal" class="modal">
+            <div class="modal-content" style="background-color: #000; max-height: 92%;">
+                <div style="display: flex; justify-content: flex-end;">
+                    <button class="icon-btn" style="color: var(--text-gray);" onclick="closePaywall()">✕</button>
+                </div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <span style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--yellow-accent); font-weight: 800; background: rgba(255,214,0,0.15); padding: 4px 10px; border-radius: 12px;">WIDE AWAKE UNLIMITED PRO</span>
+                    <h2 style="font-size: 24px; font-weight: 800; margin-top: 10px;">Never Over-Sleep Again. Guaranteed.</h2>
+                    <p id="paywall-reason-text" style="font-size: 13px; color: var(--orange-primary); margin-top: 4px;"></p>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                    <div style="border: 2px solid var(--yellow-accent); border-radius: 14px; padding: 14px; background: #141418; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 15px;">Pro Weekly</div>
+                            <div style="font-size: 12px; color: var(--text-gray);">3-Day Free Trial, then $4.99/week</div>
+                        </div>
+                        <span style="font-size: 10px; font-weight: 800; background: var(--yellow-accent); color: black; padding: 3px 6px; border-radius: 4px;">MOST POPULAR</span>
+                    </div>
+
+                    <div style="border: 1px solid #333; border-radius: 14px; padding: 14px; background: #141418; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; font-size: 15px;">Lifetime Access</div>
+                            <div style="font-size: 12px; color: var(--text-gray);">$199.99 one-time payment</div>
+                        </div>
+                        <span style="font-size: 10px; font-weight: 800; background: #333; color: white; padding: 3px 6px; border-radius: 4px;">BEST VALUE</span>
+                    </div>
+                </div>
+
+                <button onclick="unlockPro()" style="width: 100%; height: 52px; background: linear-gradient(90deg, #ffd600, #ff6b00); border: none; border-radius: 14px; color: black; font-weight: 800; font-size: 15px; cursor: pointer;">START 3-DAY FREE TRIAL</button>
+            </div>
+        </div>
+
+        <!-- 4. ACTIVE ALARM LOCK-IN SCREEN -->
+        <div id="active-alarm-screen" class="active-alarm-screen">
+            <!-- Alert Status -->
+            <div style="text-align: center;">
+                <div class="urgency-badge" id="alarm-urgency-status">● ALARM ACTIVE</div>
+                <h2 id="active-alarm-name" style="font-size: 26px; font-weight: 800; margin-top: 4px;">WAKE UP</h2>
+                <div id="penalty-countdown" style="font-family: 'JetBrains Mono'; font-size: 11px; color: var(--text-gray); margin-top: 4px;">Penalty escalation in 90s</div>
+                
+                <div class="meter">
+                    <div class="meter-fill" id="volume-meter-fill"></div>
+                </div>
+
+                <!-- Choice On Wake Pills -->
+                <div class="switcher-pills" id="switcher-container">
+                    <div class="pill active" onclick="switchActiveDisarm('math')">Math</div>
+                    <div class="pill" onclick="switchActiveDisarm('shake')">Shake</div>
+                    <div class="pill" onclick="switchActiveDisarm('barcode')">Barcode</div>
+                    <div class="pill" onclick="switchActiveDisarm('memory')">Memory</div>
+                    <div class="pill" onclick="switchActiveDisarm('jigsaw')">Jigsaw</div>
+                </div>
+            </div>
+
+            <!-- Challenge Container -->
+            <div id="active-challenge-container" style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <!-- Dynamically rendered challenge -->
+            </div>
+
+            <!-- Lock Note -->
+            <div style="text-align: center; font-size: 11px; color: var(--text-gray);">
+                Audio and haptics will not silence until verified.
+            </div>
+        </div>
+    </div>
+
+    <!-- Web Audio Piercing Emergency Siren Synthesizer & Simulator Logic -->
+    <script>
+        // State
+        let alarms = [
+            { id: '1', time: '07:00', label: 'Morning Awakening', isEnabled: true, type: 'math', allowChoice: true, penalty: true },
+            { id: '2', time: '08:30', label: 'Workout Drill', isEnabled: false, type: 'shake', allowChoice: true, penalty: true }
+        ];
+        let isPro = false;
+        let selectedChallengeType = 'math';
+        let currentAlarm = null;
+        let activeDisarmType = 'math';
+        let audioCtx = null;
+        let sirenOscillator = null;
+        let sirenModulator = null;
+        let penaltyInterval = null;
+        let penaltySeconds = 90;
+
+        // Sound Synthesis (Dual frequency 2400Hz - 3200Hz piercing klaxon identical to Swift engine)
+        function startPiercingSiren() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Carrier Oscillator
+                sirenOscillator = audioCtx.createOscillator();
+                sirenOscillator.type = 'sawtooth';
+                sirenOscillator.frequency.setValueAtTime(2800, audioCtx.currentTime);
+
+                // Modulator (Frequency modulation between 2400Hz and 3200Hz at 4Hz)
+                sirenModulator = audioCtx.createOscillator();
+                sirenModulator.type = 'square';
+                sirenModulator.frequency.setValueAtTime(4, audioCtx.currentTime);
+
+                const modGain = audioCtx.createGain();
+                modGain.gain.setValueAtTime(400, audioCtx.currentTime);
+
+                sirenModulator.connect(modGain);
+                modGain.connect(sirenOscillator.frequency);
+
+                const masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+
+                sirenOscillator.connect(masterGain);
+                masterGain.connect(audioCtx.destination);
+
+                sirenOscillator.start();
+                sirenModulator.start();
+            } catch (e) {
+                console.log('Audio Context restricted until user gesture:', e);
+            }
+        }
+
+        function stopPiercingSiren() {
+            if (sirenOscillator) {
+                try { sirenOscillator.stop(); sirenModulator.stop(); } catch(e){}
+                sirenOscillator = null;
+            }
+            if (audioCtx) {
+                try { audioCtx.close(); } catch(e){}
+                audioCtx = null;
+            }
+            clearInterval(penaltyInterval);
+        }
+
+        // Render Dashboard Alarms
+        function renderAlarms() {
+            const container = document.getElementById('alarms-list');
+            container.innerHTML = '';
+
+            alarms.forEach(alarm => {
+                const card = document.createElement('div');
+                card.className = 'alarm-card';
+                card.innerHTML = `
+                    <div>
+                        <div class="alarm-time">${alarm.time}</div>
+                        <div class="alarm-label">${alarm.label}</div>
+                        <div class="alarm-badge">⚡ ${alarm.type.toUpperCase()} ${alarm.allowChoice ? '• CHOICE ON WAKE' : ''}</div>
+                    </div>
+                    <div class="alarm-actions">
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" ${alarm.isEnabled ? 'checked' : ''} onchange="toggleAlarm('${alarm.id}')">
+                            <span class="slider"></span>
+                        </label>
+                        <button class="test-btn" onclick="event.stopPropagation(); triggerAlarm('${alarm.id}')">TEST</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function toggleAlarm(id) {
+            const alarm = alarms.find(a => a.id === id);
+            if (alarm) {
+                if (!alarm.isEnabled && !isPro && alarms.filter(a => a.isEnabled).length >= 1) {
+                    openPaywall('Free plan allows 1 active alarm. Upgrade to Pro for unlimited alarms.');
+                    renderAlarms();
+                    return;
+                }
+                alarm.isEnabled = !alarm.isEnabled;
+                renderAlarms();
+            }
+        }
+
+        function triggerAlarm(id) {
+            currentAlarm = alarms.find(a => a.id === id) || alarms[0];
+            activeDisarmType = currentAlarm.type;
+            penaltySeconds = 90;
+
+            document.getElementById('active-alarm-name').innerText = currentAlarm.label.toUpperCase();
+            document.getElementById('active-alarm-screen').classList.add('active');
+            document.getElementById('active-alarm-screen').classList.remove('penalty');
+
+            startPiercingSiren();
+            startPenaltyTimer();
+            renderActiveChallenge();
+        }
+
+        function startPenaltyTimer() {
+            clearInterval(penaltyInterval);
+            penaltyInterval = setInterval(() => {
+                penaltySeconds--;
+                if (penaltySeconds > 0) {
+                    document.getElementById('penalty-countdown').innerText = `Penalty escalation in ${penaltySeconds}s`;
+                    const fill = 85 + (15 * (90 - penaltySeconds) / 90);
+                    document.getElementById('volume-meter-fill').style.width = fill + '%';
+                } else {
+                    document.getElementById('penalty-countdown').innerText = `MAX VOLUME + SHOCKWAVES ENGAGED`;
+                    document.getElementById('alarm-urgency-status').innerText = `● MAX PENALTY ESCALATION`;
+                    document.getElementById('alarm-urgency-status').classList.add('penalty-badge');
+                    document.getElementById('active-alarm-screen').classList.add('penalty');
+                    document.getElementById('volume-meter-fill').style.backgroundColor = 'var(--red-penalty)';
+                    document.getElementById('volume-meter-fill').style.width = '100%';
+                }
+            }, 1000);
+        }
+
+        function switchActiveDisarm(type) {
+            activeDisarmType = type;
+            document.querySelectorAll('.switcher-pills .pill').forEach(pill => {
+                pill.classList.toggle('active', pill.innerText.toLowerCase() === type);
+            });
+            renderActiveChallenge();
+        }
+
+        // Render Challenges
+        let mathA = 24, mathB = 38, mathAns = 62, mathInput = "";
+        let currentShakes = 0, targetShakes = 30;
+        let memoryPattern = [0, 3, 7, 8], memorySelected = [], isMemorizing = true;
+        let jigsawTiles = [1, 2, 3, 4, 5, 0, 7, 8, 6];
+
+        function renderActiveChallenge() {
+            const container = document.getElementById('active-challenge-container');
+            container.innerHTML = '';
+
+            if (activeDisarmType === 'math') {
+                mathA = Math.floor(Math.random() * 40) + 12;
+                mathB = Math.floor(Math.random() * 40) + 15;
+                mathAns = mathA + mathB;
+                mathInput = "";
+
+                container.innerHTML = `
+                    <div style="font-family: 'JetBrains Mono'; color: var(--orange-primary); font-size: 13px; font-weight: 700; margin-bottom: 12px;">MENTAL ARITHMETIC</div>
+                    <div style="font-size: 42px; font-weight: 800; margin-bottom: 12px;">${mathA} + ${mathB} = ?</div>
+                    <div id="math-display" style="width: 200px; height: 48px; background: #222; border: 2px solid var(--orange-primary); border-radius: 12px; font-size: 24px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">_</div>
+                    
+                    <div class="keypad">
+                        ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="keypad-btn" onclick="tapMathDigit('${n}')">${n}</button>`).join('')}
+                        <button class="keypad-btn" style="color: #aaa;" onclick="delMathDigit()">⌫</button>
+                        <button class="keypad-btn" onclick="tapMathDigit('0')">0</button>
+                        <button class="keypad-btn" style="background: var(--orange-primary); color: black;" onclick="submitMath()">↵</button>
+                    </div>
+                `;
+            } else if (activeDisarmType === 'shake') {
+                currentShakes = 0;
+                container.innerHTML = `
+                    <div style="font-family: 'JetBrains Mono'; color: var(--yellow-accent); font-size: 13px; font-weight: 700; margin-bottom: 16px;">VIGOROUS SHAKE</div>
+                    <div class="shake-container" onclick="registerShake()">
+                        <div class="shake-circle">
+                            <span style="font-size: 42px; font-weight: 800;" id="shake-counter">${currentShakes}</span>
+                            <span style="font-size: 11px; font-family: 'JetBrains Mono'; color: #888;">OF ${targetShakes} SHAKES</span>
+                        </div>
+                        <button style="background: var(--yellow-accent); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 800; color: black; cursor: pointer;">CLICK TO SHAKE</button>
+                    </div>
+                `;
+            } else if (activeDisarmType === 'barcode') {
+                container.innerHTML = `
+                    <div style="font-family: 'JetBrains Mono'; color: var(--green-laser); font-size: 13px; font-weight: 700; margin-bottom: 16px;">BATHROOM SINK ANCHOR</div>
+                    <div style="width: 220px; height: 220px; border: 2px solid var(--green-laser); border-radius: 16px; background: #111; display: flex; align-items: center; justify-content: center; position: relative;">
+                        <span style="font-size: 54px; opacity: 0.5;">📷</span>
+                    </div>
+                    <button onclick="disarmAlarm()" style="margin-top: 20px; background: var(--green-laser); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; color: black; cursor: pointer;">VERIFY SINK BARCODE</button>
+                `;
+            } else if (activeDisarmType === 'memory') {
+                isMemorizing = true;
+                memorySelected = [];
+                container.innerHTML = `
+                    <div style="font-family: 'JetBrains Mono'; color: var(--cyan-memory); font-size: 13px; font-weight: 700; margin-bottom: 16px;">MEMORY MATRIX</div>
+                    <div class="matrix-grid" id="matrix-grid">
+                        ${[0,1,2,3,4,5,6,7,8].map(i => `<div class="matrix-tile ${memoryPattern.includes(i) ? 'highlight' : ''}" onclick="tapMatrixTile(${i})"></div>`).join('')}
+                    </div>
+                `;
+                setTimeout(() => {
+                    isMemorizing = false;
+                    document.querySelectorAll('.matrix-tile').forEach(t => t.classList.remove('highlight'));
+                }, 2000);
+            } else if (activeDisarmType === 'jigsaw') {
+                jigsawTiles = [1, 2, 3, 4, 5, 0, 7, 8, 6];
+                renderJigsaw();
+            }
+        }
+
+        function tapMathDigit(d) {
+            mathInput += d;
+            document.getElementById('math-display').innerText = mathInput;
+        }
+
+        function delMathDigit() {
+            mathInput = mathInput.slice(0, -1);
+            document.getElementById('math-display').innerText = mathInput || '_';
+        }
+
+        function submitMath() {
+            if (parseInt(mathInput) === mathAns) {
+                disarmAlarm();
+            } else {
+                mathInput = "";
+                document.getElementById('math-display').innerText = "WRONG";
+                setTimeout(() => document.getElementById('math-display').innerText = "_", 600);
+            }
+        }
+
+        function registerShake() {
+            currentShakes++;
+            document.getElementById('shake-counter').innerText = currentShakes;
+            if (currentShakes >= targetShakes) {
+                disarmAlarm();
+            }
+        }
+
+        function tapMatrixTile(index) {
+            if (isMemorizing) return;
+            if (memoryPattern.includes(index)) {
+                if (!memorySelected.includes(index)) {
+                    memorySelected.push(index);
+                    event.target.classList.add('highlight');
+                    if (memorySelected.length === memoryPattern.length) {
+                        disarmAlarm();
+                    }
+                }
+            } else {
+                event.target.style.backgroundColor = 'red';
+                setTimeout(() => renderActiveChallenge(), 500);
+            }
+        }
+
+        function renderJigsaw() {
+            const container = document.getElementById('active-challenge-container');
+            container.innerHTML = `
+                <div style="font-family: 'JetBrains Mono'; color: var(--purple-jigsaw); font-size: 13px; font-weight: 700; margin-bottom: 16px;">SLIDING JIGSAW PUZZLE</div>
+                <div class="jigsaw-grid">
+                    ${jigsawTiles.map((n, i) => `<div class="jigsaw-tile ${n === 0 ? 'empty' : ''}" onclick="slideJigsaw(${i})">${n === 0 ? '' : n}</div>`).join('')}
+                </div>
+            `;
+        }
+
+        function slideJigsaw(idx) {
+            const emptyIdx = jigsawTiles.indexOf(0);
+            const row = Math.floor(idx / 3), col = idx % 3;
+            const eRow = Math.floor(emptyIdx / 3), eCol = emptyIdx % 3;
+
+            if ((Math.abs(row - eRow) === 1 && col === eCol) || (Math.abs(col - eCol) === 1 && row === eRow)) {
+                jigsawTiles[emptyIdx] = jigsawTiles[idx];
+                jigsawTiles[idx] = 0;
+                renderJigsaw();
+                if (jigsawTiles.join('') === '123456780') {
+                    disarmAlarm();
+                }
+            }
+        }
+
+        function disarmAlarm() {
+            stopPiercingSiren();
+            document.getElementById('active-alarm-screen').classList.remove('active');
+            alert('ALARM DISARMED! You are now Wide Awake!');
+        }
+
+        // Modals & Paywall
+        function openCreateModal() {
+            if (!isPro && alarms.filter(a => a.isEnabled).length >= 1) {
+                openPaywall('Free plan includes 1 active alarm. Upgrade to Pro for unlimited alarms.');
+                return;
+            }
+            document.getElementById('alarm-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('alarm-modal').classList.remove('active');
+        }
+
+        function selectChallengeType(type) {
+            if ((type === 'barcode' || type === 'memory') && !isPro) {
+                openPaywall(`Unlocking ${type.toUpperCase()} anchor challenge requires Pro.`);
+                return;
+            }
+            selectedChallengeType = type;
+            document.querySelectorAll('.challenge-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.type === type);
+            });
+        }
+
+        function saveAlarm() {
+            const time = document.getElementById('alarm-time-input').value;
+            const label = document.getElementById('alarm-label-input').value;
+            const allowChoice = document.getElementById('choice-wake-toggle').checked;
+            const penalty = document.getElementById('penalty-toggle').checked;
+
+            alarms.push({
+                id: Date.now().toString(),
+                time: time,
+                label: label,
+                isEnabled: true,
+                type: selectedChallengeType,
+                allowChoice: allowChoice,
+                penalty: penalty
+            });
+
+            closeModal();
+            renderAlarms();
+        }
+
+        function openPaywall(reason) {
+            document.getElementById('paywall-reason-text').innerText = reason || '';
+            document.getElementById('paywall-modal').classList.add('active');
+        }
+
+        function closePaywall() {
+            document.getElementById('paywall-modal').classList.remove('active');
+        }
+
+        function unlockPro() {
+            isPro = true;
+            closePaywall();
+            alert('Pro membership active! Unlimited alarms and all challenges unlocked.');
+            renderAlarms();
+        }
+
+        // Init
+        renderAlarms();
+    </script>
+</body>
+</html>

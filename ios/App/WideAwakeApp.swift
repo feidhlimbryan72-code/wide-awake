@@ -20,7 +20,7 @@ struct WideAwakeApp: App {
                 }
                 .onAppear {
                     // Configure Superwall SDK
-                    PaywallManager.shared.configure(apiKey: "pk_live_mock_wakeorpay_superwall")
+                    PaywallManager.shared.configure(apiKey: "pk_live_mock_wideawake_superwall")
                 }
         }
     }

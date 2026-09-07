@@ -3,8 +3,8 @@ import Foundation
 /// Defines the subscription tiers managed through Superwall & StoreKit 2.
 public enum SubscriptionTier: String, Codable, Sendable {
     case free
-    case proWeekly = "com.wakeorpay.proweekly"
-    case proLifetime = "com.wakeorpay.prolifetime"
+    case proWeekly = "com.wideawake.proweekly"
+    case proLifetime = "com.wideawake.prolifetime"
 
     public var displayName: String {
         switch self {

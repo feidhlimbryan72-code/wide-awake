@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.wakeorpay.app">
+    package="com.wideawake.app">
 
     <!-- Exact Alarm & Wakeup Permissions -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -21,13 +21,13 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 
     <application
-        android:name=".WakeOrPayApplication"
+        android:name=".WideAwakeApplication"
         android:allowBackup="true"
         android:icon="@android:drawable/ic_lock_idle_alarm"
         android:label="Wide Awake"
         android:roundIcon="@android:drawable/ic_lock_idle_alarm"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WakeOrPay">
+        android:theme="@style/Theme.WideAwake">
 
         <!-- Alarm Broadcast Receiver -->
         <receiver
@@ -37,7 +37,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-                <action android:name="com.wakeorpay.ALARM_TRIGGER" />
+                <action android:name="com.wideawake.ALARM_TRIGGER" />
             </intent-filter>
         </receiver>
 
@@ -53,7 +53,7 @@
             android:exported="false"
             android:showWhenLocked="true"
             android:turnScreenOn="true"
-            android:theme="@style/Theme.WakeOrPay.FullScreen"
+            android:theme="@style/Theme.WideAwake.FullScreen"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance" />
 
@@ -61,7 +61,7 @@
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.WakeOrPay">
+            android:theme="@style/Theme.WideAwake">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

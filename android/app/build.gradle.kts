@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.wakeorpay.app"
+    namespace = "com.wideawake.app"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.wakeorpay.app"
+        applicationId = "com.wideawake.app"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

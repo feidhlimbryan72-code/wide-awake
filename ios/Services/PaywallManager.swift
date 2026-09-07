@@ -11,7 +11,7 @@ public final class PaywallManager: ObservableObject {
     @Published public var shouldPresentPaywall: Bool = false
     @Published public var activePaywallReason: String = ""
 
-    private let userDefaultsKey = "com.wakeorpay.subscription_state"
+    private let userDefaultsKey = "com.wideawake.subscription_state"
 
     private init() {
         loadSubscriptionState()

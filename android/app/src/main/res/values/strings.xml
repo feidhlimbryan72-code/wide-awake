@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">WakeOrPay</string>
+    <string name="channel_name">Active Alarm Siren</string>
+    <string name="channel_description">High urgency audio playback for WakeOrPay alarm</string>
+    <string name="alarm_active_title">WAKE UP! ALARM SOUNDING</string>
+    <string name="alarm_active_desc">Complete your challenges to silence playback.</string>
+</resources>

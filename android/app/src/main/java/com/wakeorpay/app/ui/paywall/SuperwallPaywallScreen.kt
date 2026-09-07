@@ -73,7 +73,7 @@ fun SuperwallPaywallScreen(
                     modifier = Modifier.size(16.dp)
                 )
                 Text(
-                    text = "WAKEORPAY UNLIMITED PRO",
+                    text = "WIDE AWAKE UNLIMITED PRO",
                     fontSize = 11.sp,
                     fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Black,

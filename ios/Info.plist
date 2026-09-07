@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleIdentifier</key>
-    <string>com.wakeorpay.ios</string>
+    <string>com.wideawake.ios</string>
     <key>CFBundleName</key>
-    <string>WakeOrPay</string>
+    <string>Wide Awake</string>
+    <key>CFBundleDisplayName</key>
+    <string>Wide Awake</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -29,12 +31,12 @@
         <string>fetch</string>
     </array>
     <key>NSCameraUsageDescription</key>
-    <string>WakeOrPay requires camera access to scan your target barcode/QR anchor (e.g., bathroom sink or coffee maker) to verify you are physically out of bed.</string>
+    <string>Wide Awake requires camera access to scan your target barcode/QR anchor (e.g., bathroom sink or coffee maker) to verify you are physically out of bed.</string>
     <key>NSMotionUsageDescription</key>
-    <string>WakeOrPay uses motion sensors to detect dynamic body movement and shake challenges to guarantee physical alertness.</string>
+    <string>Wide Awake uses motion sensors to detect dynamic body movement and shake challenges to guarantee physical alertness.</string>
     <key>NSHealthShareUsageDescription</key>
-    <string>WakeOrPay monitors real-time steps and heart rate to ensure physical waking thresholds are satisfied before silencing the alarm.</string>
+    <string>Wide Awake monitors real-time steps and heart rate to ensure physical waking thresholds are satisfied before silencing the alarm.</string>
     <key>NSHealthUpdateUsageDescription</key>
-    <string>WakeOrPay tracks wake-up workout sessions on Apple Watch to verify physical exertion.</string>
+    <string>Wide Awake tracks wake-up workout sessions on Apple Watch to verify physical exertion.</string>
 </dict>
 </plist>

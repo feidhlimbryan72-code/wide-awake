@@ -36,7 +36,7 @@ public struct PaywallView: View {
                         HStack(spacing: 6) {
                             Image(systemName: "bolt.shield.fill")
                                 .foregroundColor(.yellow)
-                            Text("RISEQUEST UNLIMITED PRO")
+                            Text("WIDE AWAKE UNLIMITED PRO")
                                 .font(.system(size: 12, weight: .black, design: .monospaced))
                                 .foregroundColor(.yellow)
                         }

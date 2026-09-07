@@ -24,7 +24,7 @@
         android:name=".WakeOrPayApplication"
         android:allowBackup="true"
         android:icon="@android:drawable/ic_lock_idle_alarm"
-        android:label="WakeOrPay"
+        android:label="Wide Awake"
         android:roundIcon="@android:drawable/ic_lock_idle_alarm"
         android:supportsRtl="true"
         android:theme="@style/Theme.WakeOrPay">

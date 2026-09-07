@@ -1,6 +1,6 @@
-# WakeOrPay / RiseQuest (Dual-Platform: iOS & Android)
+# Wide Awake (Dual-Platform: iOS & Android)
 
-**WakeOrPay** is an unapologetic, high-accountability gamified alarm clock app engineered specifically for heavy sleepers across both **iOS (Swift 6 & SwiftUI)** and **Android (Kotlin & Jetpack Compose)**.
+**Wide Awake** is an unapologetic, high-accountability gamified alarm clock app engineered specifically for heavy sleepers across both **iOS (Swift 6 & SwiftUI)** and **Android (Kotlin & Jetpack Compose)**.
 
 It locks the device screen and forces cognitive, physical, visual, and biometric disarm challenges before high-urgency siren audio playback can be silenced.
 

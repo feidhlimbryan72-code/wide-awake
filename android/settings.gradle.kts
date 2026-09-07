@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "WakeOrPay"
+rootProject.name = "WideAwake"
 include(":app")

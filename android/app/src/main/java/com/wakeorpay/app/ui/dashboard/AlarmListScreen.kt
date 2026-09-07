@@ -55,7 +55,7 @@ fun AlarmListScreen() {
             TopAppBar(
                 title = {
                     Text(
-                        text = "WakeOrPay",
+                        text = "Wide Awake",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Black,
                         color = White

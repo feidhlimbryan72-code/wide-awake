@@ -94,7 +94,7 @@ public struct AlarmListView: View {
                     }
                 }
             }
-            .navigationTitle("WakeOrPay")
+            .navigationTitle("Wide Awake")
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
